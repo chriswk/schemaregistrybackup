@@ -1,0 +1,61 @@
+version: "3.8"
+services:
+  postgres:
+    build: postgres/
+    ports:
+      - "15432:5432"
+    environment:
+      DATABASE_HOST: "127.0.0.1"
+      POSTGRES_USER: "root"
+      POSTGRES_PASSWORD: "root"
+      POSTGRES_DB: "root"
+    volumes:
+      - ./postgres-init.sql:/docker-entrypoint-initdb.d/docker_postgres_init.sql
+  zookeeper:
+    image: confluentinc:cp-zookeeper:6.0.0
+    ports:
+      - "2181:2181"
+    environment:
+      ZOOKEEPER_CLIENT_PORT: 2181
+      ZOOKEEPER_TICK_TIME: 2000
+  kafka:
+    image: confluentinc/cp-kafka
+    ports:
+      - "9092:9092"
+    depends_on:
+      - zookeeper
+    environment:
+      KAFKA_BROKER_ID: 1
+      KAFKA_ZOOKEEPER_CONNECT: "zookeeper:2181"
+      KAFKA_ADVERTISED_LISTENERS: "PLAINTEXT://kafka:9092"
+      KAFKA_OFFSET_TOPIC_REPLICATION_FACTOR: 1
+  schemaregistry:
+    image: confluentinc/cp-schema-registry
+    depends_on:
+      - kafka
+    ports:
+      - "8081:8081"
+    environment:
+      SCHEMA_REGISTRY_HOST_NAME: "schemaregistry"
+      SCHEMA_REGISTRY_KAFKASTORE_BOOTSTRAP_SERVERS: "kafka:9092"
+  schemaregistryui:
+    image: landoop/schema-registry-ui
+    ports:
+      - "8200:8000"
+    depends_on:
+      - schemaregistry
+    environment:
+      PROXY: 'true'
+      SCHEMAREGISTRY_URL: "http://schemaregistry:8081"
+  schemaregistrybackup:
+    build: .
+    depends_on:
+      - kafka
+      - postgres
+    environment:
+      POSTGRES_URL: jdbc:postgresql://postgres:5432/schemaregistrybackup
+      POSTGRES_USERNAME: schemaregistrybackup
+      POSTGRES_PASSWORD: schemaregistrybackup
+      KAFKA_BOOTSTRAP_SERVERS: kafka:9092
+
+
