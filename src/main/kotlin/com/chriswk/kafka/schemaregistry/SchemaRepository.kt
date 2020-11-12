@@ -1,8 +1,34 @@
 package com.chriswk.kafka.schemaregistry
 
-import org.springframework.data.annotation.Id
-import org.springframework.data.repository.reactive.ReactiveCrudRepository
+import org.hibernate.annotations.CreationTimestamp
+import org.hibernate.annotations.UpdateTimestamp
+import org.springframework.data.repository.PagingAndSortingRepository
+import java.time.Instant
+import java.util.UUID
+import javax.persistence.Column
+import javax.persistence.Entity
+import javax.persistence.Id
+import javax.persistence.Table
 
-data class Schema(@Id val id: Long, val schema: String, val subject: String, val version: Long)
 
-interface SchemaRepository : ReactiveCrudRepository<Schema, Long>
+@Entity
+@Table(name = "schemas")
+data class Schema(
+    @Id val id: UUID = UUID.randomUUID(),
+    val schemaId: Long,
+    @Column(name = "schema_definition") val schema: String,
+    val subject: String,
+    val version: Long,
+    val deleted: Boolean,
+    @CreationTimestamp
+    val created: Instant = Instant.now(),
+    @UpdateTimestamp
+    val updated: Instant = Instant.now()
+)
+
+interface SchemaRepository : PagingAndSortingRepository<Schema, UUID> {
+    fun findBySchemaId(schemaId: Long): List<Schema>
+    fun findBySchemaIdAndSubject(schemaId: Long, subject: String): List<Schema>
+    fun findAllBySubject(subject: String): List<Schema>
+    fun findBySubjectAndVersion(subject: String, version: Long): Schema?
+}

@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration>
+    <Appenders>
+        <Console name="Console" target="SYSTEM_OUT">
+            <PatternLayout pattern="[~5%p] [%d{ISO8601}] [%t] %m%n" />
+        </Console>
+    </Appenders>
+    <Loggers>
+        <logger name="com.mercell" level="debug" />
+        <Root level="info">
+            <AppenderRef ref= "Console" />
+        </Root>
+    </Loggers>
+</Configuration>
