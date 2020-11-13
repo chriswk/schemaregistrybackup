@@ -1,7 +1,9 @@
 # Schema registry backup to JDBC compatible database
 * Reads _schemas topic, writes to database
 
-# Running locally
+# Running
+ 
+## Locally
 You need to configure 4 environment variables
 * KAFKA_BOOTSTRAP_SERVERS
     * Which should point to the kafka server you want to read schemas from
@@ -13,6 +15,14 @@ You need to configure 4 environment variables
     * User to use to connect to database
 * JDBC_PASSWORD
     * Password to connect to database
+
+## Running in docker-compose
+Starting docker-compose in the root directory of this project will start Zookeeper, Kafka, Schemaregistry, Schemaregistryui and this application.
+```bash
+$ docker-compose up -d
+```
+* Use the included schema-registry-ui to register schemas
+* See that the subjects also become available under http://localhost:9900/subjects
 
 ## Authenticated kafka connection
 Since this is using Spring kafka, overriding spring's properties will also be supported

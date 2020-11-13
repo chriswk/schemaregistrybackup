@@ -7,6 +7,8 @@
     </Appenders>
     <Loggers>
         <logger name="com.chriswk" level="debug" />
+        <logger name="org.testcontainers" level="debug" />
+        <logger name="org.springframework" level="debug" />
         <Root level="info">
             <AppenderRef ref= "Console" />
         </Root>

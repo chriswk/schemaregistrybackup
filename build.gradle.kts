@@ -11,6 +11,7 @@ plugins {
 
 repositories {
     jcenter()
+    maven(url = "http://packages.confluent.io/maven/")
 }
 java.sourceCompatibility = JavaVersion.VERSION_11
 
@@ -27,12 +28,15 @@ dependencies {
     implementation("org.flywaydb:flyway-core")
     implementation("org.jetbrains.kotlin:kotlin-reflect")
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-reactor")
     implementation("org.springframework.kafka:spring-kafka")
     runtimeOnly("org.postgresql:postgresql")
     testImplementation("org.springframework.boot:spring-boot-starter-test")
-    testImplementation("io.projectreactor:reactor-test")
-    testImplementation("org.springframework.kafka:spring-kafka-test")}
+    testImplementation("org.springframework.kafka:spring-kafka-test")
+    testImplementation("org.testcontainers:postgresql:1.15.0")
+    testImplementation("org.testcontainers:kafka:1.15.0")
+    testImplementation("org.testcontainers:junit-jupiter:1.15.0")
+    testImplementation("io.confluent:kafka-avro-serializer:6.0.0")
+}
 tasks.withType<Test> {
     useJUnitPlatform()
 }

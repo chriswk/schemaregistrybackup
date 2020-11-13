@@ -2,8 +2,10 @@ package com.chriswk.kafka.schemaregistry
 
 import org.hibernate.annotations.CreationTimestamp
 import org.hibernate.annotations.UpdateTimestamp
+import org.springframework.data.jpa.repository.Query
 import org.springframework.data.repository.PagingAndSortingRepository
 import java.time.Instant
+import java.util.Optional
 import java.util.UUID
 import javax.persistence.Column
 import javax.persistence.Entity
@@ -27,8 +29,9 @@ data class Schema(
 )
 
 interface SchemaRepository : PagingAndSortingRepository<Schema, UUID> {
-    fun findBySchemaId(schemaId: Long): List<Schema>
-    fun findBySchemaIdAndSubject(schemaId: Long, subject: String): List<Schema>
+    fun findAllBySchemaId(schemaId: Long): List<Schema>
+    fun findAllBySchemaIdAndSubject(schemaId: Long, subject: String): List<Schema>
     fun findAllBySubject(subject: String): List<Schema>
     fun findBySubjectAndVersion(subject: String, version: Long): Schema?
+    fun findBySchemaIdAndSubjectAndVersion(schemaId: Long, subject: String, version: Long): Schema?
 }
