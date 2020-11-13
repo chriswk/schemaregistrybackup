@@ -18,6 +18,7 @@ services:
     environment:
       ZOOKEEPER_CLIENT_PORT: 2181
       ZOOKEEPER_TICK_TIME: 2000
+
   kafka:
     image: confluentinc/cp-kafka
     ports:
@@ -26,9 +27,9 @@ services:
       - zookeeper
     environment:
       KAFKA_BROKER_ID: 1
-      KAFKA_ZOOKEEPER_CONNECT: "zookeeper:2181"
-      KAFKA_ADVERTISED_LISTENERS: "PLAINTEXT://kafka:9092"
-      KAFKA_OFFSET_TOPIC_REPLICATION_FACTOR: 1
+      KAFKA_ZOOKEEPER_CONNECT: 'zookeeper:2181'
+      KAFKA_ADVERTISED_LISTENERS: 'PLAINTEXT://kafka:9092'
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
   schemaregistry:
     image: confluentinc/cp-schema-registry
     depends_on:
@@ -38,6 +39,27 @@ services:
     environment:
       SCHEMA_REGISTRY_HOST_NAME: 'schemaregistry'
       SCHEMA_REGISTRY_KAFKASTORE_BOOTSTRAP_SERVERS: 'kafka:9092'
+  kafkarest:
+    image: confluentinc/cp-kafka-rest
+    depends_on:
+      - kafka
+      - schemaregistry
+    ports:
+      - "8082:8082"
+    environment:
+      KAFKA_REST_HOST_NAME: kafkarest
+      KAFKA_REST_BOOTSTRAP_SERVERS: "PLAINTEXT://kafka:9092"
+      KAFKA_REST_LISTENERS: "http://kafkarest:8082"
+      KAFKA_REST_SCHEMA_REGISTRY_URL: "http://schemaregistry:8081"
+  kafkatopicsui:
+    image: landoop/kafka-topics-ui
+    ports:
+      - "8000:8000"
+    depends_on:
+      - kafkarest
+    environment:
+      KAFKA_REST_PROXY_URL: "http://kafkarest:8082"
+      PROXY: 'true'
   schemaregistryui:
     image: landoop/schema-registry-ui
     ports:
@@ -53,10 +75,12 @@ services:
       - kafka
       - postgres
       - schemaregistry
+    ports:
+      - "9900:9900"
     environment:
-      POSTGRES_URL: jdbc:postgresql://postgres:5432/schemaregistrybackup
-      POSTGRES_USERNAME: schemaregistrybackup
-      POSTGRES_PASSWORD: schemaregistrybackup
+      JDBC_URL: jdbc:postgresql://postgres:5432/schemaregistrybackup
+      JDBC_USERNAME: schemaregistrybackup
+      JDBC_PASSWORD: schemaregistrybackup
       KAFKA_BOOTSTRAP_SERVERS: kafka:9092
 
 

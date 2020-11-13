@@ -15,6 +15,9 @@ class SchemaConsumer(val json: Json, val schemaRepository: SchemaRepository) {
         val key = json.decodeFromString(SchemaKey.serializer(), message.key())
         if (key.keytype == "SCHEMA") {
             val schema = json.decodeFromString(SchemaMessage.serializer(), message.value()).toSchemaEntity()
+            schemaRepository.findById(schema.schemaId).ifPresentOrElse({ s ->
+                schemaRepository.save(s.copy(deleted = schema.deleted))
+            }, { schemaRepository.save(schema)})
             schemaRepository.save(schema)
             logger.info("Saved $schema")
         } else {
@@ -28,7 +31,7 @@ class SchemaConsumer(val json: Json, val schemaRepository: SchemaRepository) {
 }
 
 @Serializable
-data class SchemaKey(val keytype: String, val subject: String, val version: Long, val magic: Long)
+data class SchemaKey(val keytype: String, val subject: String?, val version: Long?, val magic: Long?)
 @Serializable
 data class SchemaMessage(
     val subject: String,

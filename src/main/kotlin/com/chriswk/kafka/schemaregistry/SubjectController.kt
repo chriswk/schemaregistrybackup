@@ -10,13 +10,13 @@ import org.springframework.web.bind.annotation.RestController
 @RequestMapping("/subjects")
 class SubjectController(val repo: SchemaRepository) {
 
-    @GetMapping
+    @GetMapping("/")
     fun allSubjects(): List<String> {
         return repo.findAll().map { it.schemaId.subject }
     }
     @GetMapping("/{subject}/versions")
-    fun getSubjectVersions(@PathVariable("subject") subject: String): List<String> {
-        return repo.findAllBySchemaIdSubject(subject).map { it.schemaId.version.toString() }
+    fun getSubjectVersions(@PathVariable("subject") subject: String): List<Long> {
+        return repo.findAllBySchemaIdSubject(subject).map { it.schemaId.version }
     }
     @GetMapping("/{subject}/versions/{version}")
     fun getSubjectVersion(@PathVariable("subject") subject: String, @PathVariable("version") version: Long): Schema? {
