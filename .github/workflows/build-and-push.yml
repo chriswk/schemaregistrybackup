@@ -1,0 +1,24 @@
+name: Build and publish Docker image
+on:
+  push:
+    branches:
+      - main
+jobs:
+  build_and_push:
+    name: Build and publish
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+      - name: Cache .gradle
+        uses: burrunan/gradle-cache-action@v1
+      - name: Build image
+        run: |
+          ./gradlew bootBuildImage
+      - name: Publish to Docker hub
+        env:
+          ORG_GRADLE_PROJECT_dockerUsername: ${{ secrets.DOCKER_USERNAME }}
+          ORG_GRADLE_PROJECT_dockerPassword: ${{ secrets.DOCKER_PASSWORD }}
+        run: |
+          ./gradlew bootBuildImage --imageName=chriswk/schemaregistrybackup:$tag --publishImage
+

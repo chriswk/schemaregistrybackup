@@ -46,3 +46,16 @@ tasks.withType<KotlinCompile> {
         jvmTarget = "11"
     }
 }
+val dockerUsername: String by project
+val dockerPassword: String by project
+
+tasks.getByName<org.springframework.boot.gradle.tasks.bundling.BootBuildImage>("bootBuildImage") {
+    imageName = "chriswk/schemaregistrybackup"
+    isPublish = true
+    docker {
+        publishRegistry {
+            username = dockerUsername
+            password = dockerPassword
+        }
+    }
+}
