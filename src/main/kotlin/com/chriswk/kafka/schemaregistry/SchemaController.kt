@@ -11,20 +11,20 @@ class SchemaController(val repo: SchemaRepository) {
 
     @RequestMapping("/ids")
     fun getAllIds(): List<Long> {
-        return repo.findAll().map { it.schemaId }
+        return repo.findAll().map { it.schemaId.id }
     }
 
     @RequestMapping("/ids/{id}")
     fun getById(@PathVariable("id") id: Long): String {
-        return repo.findAllBySchemaId(id).firstOrNull()?.let {
+        return repo.findAllBySchemaIdId(id).firstOrNull()?.let {
             it.schema
         } ?: throw SchemaNotFoundException("Could not find schema with id: $id")
     }
 
     @RequestMapping("/ids/{id}/versions")
     fun getVersionsById(@PathVariable("id") id: Long): List<SubjectAndVersion> {
-        return repo.findAllBySchemaId(id).map {
-            SubjectAndVersion(it.subject, it.version)
+        return repo.findAllBySchemaIdId(id).map {
+            SubjectAndVersion(it.schemaId.subject, it.schemaId.version)
         }
     }
 }

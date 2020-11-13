@@ -39,10 +39,10 @@ data class SchemaMessage(
 ) {
     fun toSchemaEntity(): Schema {
         return Schema(
-            schemaId = id,
-            schema = schema,
+            schemaId = SchemaId(id = id,
             subject = subject,
-            version = version,
+            version = version),
+            schema = schema,
             deleted = deleted
         )
     }

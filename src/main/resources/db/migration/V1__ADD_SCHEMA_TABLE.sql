@@ -1,10 +1,10 @@
 CREATE TABLE IF NOT EXISTS schemas(
-    id uuid PRIMARY KEY,
-    schema_id bigint,
+    id bigint,
     schema_definition text,
     subject text,
     version bigint,
     deleted boolean,
     created timestamp,
-    updated timestamp
+    updated timestamp,
+    PRIMARY KEY (id, subject, version)
 );

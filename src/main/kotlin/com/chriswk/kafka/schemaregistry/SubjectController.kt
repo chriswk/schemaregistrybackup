@@ -12,14 +12,14 @@ class SubjectController(val repo: SchemaRepository) {
 
     @GetMapping
     fun allSubjects(): List<String> {
-        return repo.findAll().map { it.subject }
+        return repo.findAll().map { it.schemaId.subject }
     }
     @GetMapping("/{subject}/versions")
     fun getSubjectVersions(@PathVariable("subject") subject: String): List<String> {
-        return repo.findAllBySubject(subject).map { it.version.toString() }
+        return repo.findAllBySchemaIdSubject(subject).map { it.schemaId.version.toString() }
     }
     @GetMapping("/{subject}/versions/{version}")
     fun getSubjectVersion(@PathVariable("subject") subject: String, @PathVariable("version") version: Long): Schema? {
-        return repo.findBySubjectAndVersion(subject, version)
+        return repo.findBySchemaIdSubjectAndSchemaIdVersion(subject, version)
     }
 }

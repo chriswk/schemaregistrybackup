@@ -101,7 +101,7 @@ class BackupTest {
         record.put("favorite_number", 51)
         record.put("favorite_color", "Blue")
         kafkaTemplate.send(ProducerRecord("test-topic", "testkey", record)).get()
-        val subjects = schemaRepository.findAllBySubject("test-topic-value")
+        val subjects = schemaRepository.findAllBySchemaIdSubject("test-topic-value")
         assertThat(subjects).isNotEmpty
         val parsedSchema = org.apache.avro.Schema.Parser().parse(subjects.first().schema)
         assertDoesNotThrow {
@@ -146,7 +146,7 @@ class BackupTest {
         record2.put("favorite_color", "Blue")
         record2.put("favorite_movie", "The Big Lebowski")
         kafkaTemplate.send(ProducerRecord("test-topic", "testkey2", record2)).get()
-        val schemasForSubject = schemaRepository.findAllBySubject("test-topic-value")
+        val schemasForSubject = schemaRepository.findAllBySchemaIdSubject("test-topic-value")
         assertThat(schemasForSubject).hasSize(2)
     }
 

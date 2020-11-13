@@ -46,7 +46,7 @@ class RepositoryTests {
     fun ableToSave() {
         val schema = schemaRepository.save(
             Schema(
-                schemaId = 1L, schema = """
+                SchemaId(id = 1L,subject = "test-topic-value", version = 1), schema = """
             {"namespace": "example.avro",
              "type": "record",
              "name": "User",
@@ -56,10 +56,10 @@ class RepositoryTests {
                  {"name": "favorite_color", "type": ["string", "null"]}
              ]
             }
-        """.trimIndent(), subject = "test-topic-value", version = 1, deleted = false
+        """.trimIndent(), deleted = false
             )
         )
-        val fetchedSchema = schemaRepository.findById(schema.id)
+        val fetchedSchema = schemaRepository.findById(SchemaId(1L, "test-topic-value", 1))
         assertThat(fetchedSchema).hasValueSatisfying {
             assertThat(it.schema).isEqualTo(schema.schema)
             assertThat(it.schemaId).isEqualTo(schema.schemaId)
