@@ -21,5 +21,5 @@ jobs:
           ORG_GRADLE_PROJECT_dockerUsername: ${{ secrets.DOCKER_USERNAME }}
           ORG_GRADLE_PROJECT_dockerPassword: ${{ secrets.DOCKER_PASSWORD }}
         run: |
-          ./gradlew bootBuildImage --imageName=chriswk/schemaregistrybackup:$tag --publishImage
+          ./gradlew bootBuildImage --publishImage
 
